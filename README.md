@@ -13,5 +13,5 @@ pip install -r requirements.txt
 <h3 align="left">● example</h3>
 
 <p align="center">
-  <img src="https://github.com/erfan-ops/snake-game/blob/main/examples/example.png" width=650 />
+  <img src="https://github.com/erfan-ops/snake-game/blob/main/examples/example.png" width=400 />
 </p>

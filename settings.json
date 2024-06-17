@@ -1,7 +1,7 @@
 {
     "width-in-tiles":  16,
     "height-in-tiles": 16,
-    "tile-size": 50,
+    "tile-size": 60,
 
     "target-fps": 240,
     "frame-breaker": 1,

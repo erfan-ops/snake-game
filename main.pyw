@@ -1,5 +1,7 @@
 import pygame
 import sys
+from ctypes import wintypes
+import ctypes
 from random import randint
 from time import perf_counter
 from settings import *
@@ -98,6 +100,13 @@ class Game:
                                           randint(0, TILES_IN_HEIGHT-1)*TILE_SIZE + HALF_LINE_WIDTH,
                                           TILE_SIZE_IN_LINES,
                                           TILE_SIZE_IN_LINES)
+        
+        pygame.display.set_icon(pygame.image.load("icon.png").convert_alpha())
+        
+        lpBuffer = wintypes.LPWSTR()
+        AppUserModelID = ctypes.windll.shell32.GetCurrentProcessExplicitAppUserModelID
+        AppUserModelID(ctypes.cast(ctypes.byref(lpBuffer), wintypes.LPWSTR))
+        ctypes.windll.kernel32.LocalFree(lpBuffer)
     
     
     def end(self):
