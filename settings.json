@@ -1,0 +1,21 @@
+{
+    "width-in-tiles":  16,
+    "height-in-tiles": 16,
+    "tile-size": 50,
+
+    "target-fps": 240,
+    "frame-breaker": 1,
+    "step-in-seconds": 0.069,
+
+    "bg-color": "#1a1c18",
+    "lines-color": "#000000",
+    "lines-width": 2,
+
+    "snake": {
+        "snake-start-size": 3,
+        "snake-colors": [[0, 255, 0], [0, 255, 255], [0, 0, 255], [255, 0, 255], [255, 0, 0], [255, 255, 0], [0, 255, 0]],
+        "transparent-tail": true
+    },
+
+    "food-color": "#ff0000"
+}
