@@ -67,7 +67,7 @@ class Snake:
             return True
         for i in range(len(self.body)):
             for other in self.body[i+1 : ]:
-                if self.body[i].colliderect(other):
+                if self.body[i].topleft == other.topleft:
                     return True
         return False
     
