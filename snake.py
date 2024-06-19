@@ -15,7 +15,6 @@ def draw_rect_alpha(surface: pygame.SurfaceType, color: Color, rect: pygame.rect
 
 class Snake:
     def __init__(self) -> None:
-        self.length = SNAKE_START_SIZE
         self.body: list[pygame.rect.RectType] = []
         for x in range(0, -SNAKE_START_SIZE, -1):
             self.body.append(pygame.rect.Rect(x*TILE_SIZE + HALF_LINE_WIDTH, HALF_LINE_WIDTH, TILE_SIZE_IN_LINES, TILE_SIZE_IN_LINES))
@@ -71,22 +70,22 @@ class Snake:
                     return True
         return False
     
-    def go(self, face: list[Literal[0, 1, 2, 3]]) -> None:
+    def go(self, face: Literal[0, 1, 2, 3]) -> None:
         for i in range(len(self.body)-1, 0, -1):
             self.body[i].topleft = self.body[i-1].topleft
         
-        if not face and self.facing != 1:
+        if not face and self.facing != 2:
             self.go_func = self.go_right
             self.facing = 0
-        elif face == 1 and self.facing:
+        elif face == 2 and self.facing:
             self.go_func = self.go_left
-            self.facing = 1
-        elif face == 2 and self.facing != 3:
-            self.go_func = self.go_up
             self.facing = 2
-        elif face == 3 and self.facing != 2:
-            self.go_func = self.go_down
+        elif face == 3 and self.facing != 1:
+            self.go_func = self.go_up
             self.facing = 3
+        elif face == 1 and self.facing != 3:
+            self.go_func = self.go_down
+            self.facing = 1
         
         self.go_func()
 
@@ -96,23 +95,22 @@ class Game:
         self.screen: pygame.SurfaceType = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SRCALPHA)
         self.clock = pygame.time.Clock()
         self.snake = Snake()
+        self.font = pygame.font.Font(FONT_PATH, 40)
         self.food_rect = pygame.rect.Rect(randint(0, TILES_IN_WIDTH -1)*TILE_SIZE + HALF_LINE_WIDTH,
                                           randint(0, TILES_IN_HEIGHT-1)*TILE_SIZE + HALF_LINE_WIDTH,
                                           TILE_SIZE_IN_LINES,
                                           TILE_SIZE_IN_LINES)
         
-        pygame.display.set_icon(pygame.image.load("icon.png").convert_alpha())
+        pygame.display.set_icon(pygame.image.load(ICON_PATH).convert_alpha())
         
         lpBuffer = wintypes.LPWSTR()
         AppUserModelID = ctypes.windll.shell32.GetCurrentProcessExplicitAppUserModelID
         AppUserModelID(ctypes.cast(ctypes.byref(lpBuffer), wintypes.LPWSTR))
         ctypes.windll.kernel32.LocalFree(lpBuffer)
     
-    
     def end(self):
         pygame.quit()
         sys.exit()
-    
     
     def render(self):
         self.screen.fill(BG_COLOR)
@@ -129,6 +127,13 @@ class Game:
         #-- renderings stuff --#
         pygame.draw.rect(self.screen, FOOD_COLOR, self.food_rect)
         self.snake.render(self.screen)
+        score_text = self.font.render(str(self.score), True, (255, 255, 255))
+        self.screen.blit(score_text, (30, 20))
+    
+    def reset(self):
+        self.snake = Snake()
+        self.snake_face = 0
+        self.game_timer = 0
     
     def wait(self):
         endf = perf_counter()
@@ -138,7 +143,7 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         self.end()
                     elif event.key == pygame.K_r:
-                        self.snake = Snake()
+                        self.reset()
                         return
                 elif event.type == pygame.QUIT:
                     self.end()
@@ -150,10 +155,14 @@ class Game:
             self.clock.tick(15)
     
     def run(self):
-        snake_face = 0
+        self.reward = 0
+        self.game_over = False
+        self.score = 0
+        self.snake_face = 0
         frame_counter = 1
         
-        timer: float = 0
+        step_timer: float = 0
+        self.game_timer: float = 0
         
         endf = perf_counter()
         
@@ -164,13 +173,17 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RIGHT:
-                        snake_face = 0
+                        self.snake_face = 0
+                        # self.snake_face += 1
+                        # self.snake_face %= 4
                     elif event.key == pygame.K_LEFT:
-                        snake_face = 1
+                        self.snake_face = 2
+                        # self.snake_face -= 1
+                        # self.snake_face %= 4
                     elif event.key == pygame.K_UP:
-                        snake_face = 2
+                        self.snake_face = 3
                     elif event.key == pygame.K_DOWN:
-                        snake_face = 3
+                        self.snake_face = 1
                     
                     elif event.key == pygame.K_ESCAPE:
                         self.end()
@@ -181,32 +194,36 @@ class Game:
             startf = endf
             endf = perf_counter()
             dt = endf - startf
-            timer += dt
+            step_timer += dt
+            self.game_timer += dt
             pygame.display.set_caption(f"fps: {1/dt:.2f}")
             
             # timer += self.clock.get_time()
             # pygame.display.set_caption(f"fps: {self.clock.get_fps():.2f}")
             
             frame_counter %= FRAME_BREAKER
-            if not frame_counter and timer >= SPEED:
-                rng = int(timer / SPEED)
-                timer %= SPEED
+            if not frame_counter and step_timer >= SPEED:
+                rng = int(step_timer / SPEED)
+                step_timer %= SPEED
                 for _ in range(rng):
                     self.render()
                     if self.snake.collision(self.food_rect):
+                        self.game_timer = 0
+                        self.score += 1
+                        self.reward = 10
                         while self.food_rect.topleft in [rect.topleft for rect in self.snake.body]:
                             self.food_rect = pygame.rect.Rect(randint(0, TILES_IN_WIDTH -1)*TILE_SIZE + HALF_LINE_WIDTH,
                                                             randint(0, TILES_IN_HEIGHT-1)*TILE_SIZE + HALF_LINE_WIDTH,
                                                             TILE_SIZE_IN_LINES,
                                                             TILE_SIZE_IN_LINES)
                     
-                    self.snake.go(snake_face)
+                    self.snake.go(self.snake_face)
                     
-                    if self.snake.self_hit():
+                    if self.snake.self_hit() or self.game_timer > 1.7*len(self.snake.body):
+                        self.reward = -10
+                        self.game_over = True
                         self.render()
                         pygame.display.flip()
-                        if len(self.snake.body) >= TILES_IN_WIDTH * TILES_IN_HEIGHT:
-                            print("Victory!!!")
                         self.wait()
                         endf = perf_counter()
             

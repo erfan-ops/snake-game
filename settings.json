@@ -1,7 +1,7 @@
 {
-    "width-in-tiles":  16,
-    "height-in-tiles": 16,
-    "tile-size": 60,
+    "width-in-tiles":  20,
+    "height-in-tiles": 20,
+    "tile-size": 50,
 
     "target-fps": 240,
     "frame-breaker": 1,
@@ -14,8 +14,11 @@
     "snake": {
         "snake-start-size": 3,
         "snake-colors": [[0, 255, 0], [0, 255, 255], [0, 0, 255], [255, 0, 255], [255, 0, 0], [255, 255, 0], [0, 255, 0]],
-        "transparent-tail": true
+        "transparent-tail": false
     },
 
-    "food-color": "#ff0000"
+    "food-color": "#ff0000",
+
+    "icon-path": "assets/icon.png",
+    "font-path": "fonts/Kablammo-Regular-VariableFont_MORF.ttf"
 }

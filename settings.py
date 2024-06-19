@@ -25,7 +25,7 @@ SNAKE_START_SIZE: int = SETTINGS["snake"]["snake-start-size"]
 
 FOOD_COLOR: Color = SETTINGS["food-color"]
 SNAKE_COLORS: list[Color] = SETTINGS["snake"]["snake-colors"]
-# SNAKE_COLORS.reverse()
+
 SNAKE_COLORS_LEN = len(SNAKE_COLORS)
 SNAKE_COLORS_LEN_M1 = SNAKE_COLORS_LEN - 1
 
@@ -33,4 +33,7 @@ FRAME_BREAKER: int = SETTINGS["frame-breaker"]
 
 TRANSPARENT_SNAKE_TAIL: bool = SETTINGS["snake"]["transparent-tail"]
 
-SPEED: float  = SETTINGS["step-in-seconds"]
+SPEED: float = SETTINGS["step-in-seconds"]
+
+ICON_PATH: str = SETTINGS["icon-path"]
+FONT_PATH: str = SETTINGS["font-path"]
