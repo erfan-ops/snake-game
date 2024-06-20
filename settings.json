@@ -1,9 +1,9 @@
 {
-    "width-in-tiles":  20,
-    "height-in-tiles": 20,
-    "tile-size": 50,
+    "width-in-tiles":  16,
+    "height-in-tiles": 16,
+    "tile-size": 60,
 
-    "target-fps": 240,
+    "target-fps": 120,
     "frame-breaker": 1,
     "step-in-seconds": 0.069,
 
@@ -14,11 +14,20 @@
     "snake": {
         "snake-start-size": 3,
         "snake-colors": [[0, 255, 0], [0, 255, 255], [0, 0, 255], [255, 0, 255], [255, 0, 0], [255, 255, 0], [0, 255, 0]],
-        "transparent-tail": false
+        "transparent-tail": false,
+        "render-textures": true,
+        "primary-color": [0, 120, 0],
+        "secondary-color": [255, 255, 255],
+        "tongue-color": [255, 0, 0],
+
+        "white": [255, 255, 255],
+        "black": [0, 0, 0],
+        "red"  : [255, 0, 4]
     },
 
     "food-color": "#ff0000",
 
     "icon-path": "assets/icon.png",
-    "font-path": "fonts/Kablammo-Regular-VariableFont_MORF.ttf"
+    "font-path": "fonts/Kablammo-Regular-VariableFont_MORF.ttf",
+    "textures-path": "textures"
 }

@@ -3,5 +3,10 @@ venv
 version_setup.py
 versionfile.txt
 snake-win
-snake-OD
-snake-OD.7z
+snake_game-win
+snake_game-win.zip
+snake_game-win.7z
+agent.py
+model.py
+helper.py
+model.pth

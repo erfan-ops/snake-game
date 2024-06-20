@@ -37,3 +37,13 @@ SPEED: float = SETTINGS["step-in-seconds"]
 
 ICON_PATH: str = SETTINGS["icon-path"]
 FONT_PATH: str = SETTINGS["font-path"]
+TEXTURE_PATH: str = SETTINGS["textures-path"]
+RENDER_TEXTURES: bool = SETTINGS["snake"]["render-textures"]
+
+PRIMARY_COL: Color = SETTINGS["snake"]["primary-color"]
+SECONDARY_COL: Color = SETTINGS["snake"]["secondary-color"]
+TONGUE_COL: Color = SETTINGS["snake"]["tongue-color"]
+
+WHITE: Color = SETTINGS["snake"]["white"]
+BLACK: Color = SETTINGS["snake"]["black"]
+RED  : Color = SETTINGS["snake"]["red"  ]
