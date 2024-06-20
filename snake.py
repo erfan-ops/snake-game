@@ -36,8 +36,7 @@ class Snake:
         self.tail_texture = pygame.transform.scale(pygame.image.load(os.path.join(TEXTURE_PATH, "tail.png")).convert_alpha(), (TILE_SIZE, TILE_SIZE))
         self.turn_texture = pygame.transform.scale(pygame.image.load(os.path.join(TEXTURE_PATH, "turn.png")).convert_alpha(), (TILE_SIZE, TILE_SIZE))
 
-        all_textures = [self.head_texture, self.body_texture, self.tail_texture, self.turn_texture]
-        for texture in all_textures:
+        for texture in [self.head_texture, self.body_texture, self.tail_texture, self.turn_texture]:
             for y in range(texture.get_height()):
                 for x in range(texture.get_width()):
                     r, g, b, a = texture.get_at((x, y))
@@ -75,13 +74,18 @@ class Snake:
     
     def render_texture(self, surface: pygame.SurfaceType):        
         surface.blit(pygame.transform.rotate(self.head_texture, self.texture_map[self.facing] * 90), self.body[0].topleft)
-        for i in range(1, len(self.body)-1):
+        body_len = len(self.body)
+        alpha_ratio = 255 / body_len
+        for i in range(1, body_len-1):
             other = self.body[i-1]
             rect = self.body[i]
+            alpha = alpha_ratio*(body_len-i) if TRANSPARENT_SNAKE_TAIL else 255
             if rect.facing == other.facing:
+                self.body_texture.set_alpha(alpha)
                 surface.blit(pygame.transform.rotate(self.body_texture, self.texture_map[rect.facing] * 90), rect.topleft)
             else:
                 turn_texture = self.turn_texture
+                turn_texture.set_alpha(alpha)
                 if (rect.facing == 1 and other.facing == 0) or (rect.facing == 2 and other.facing == 3):
                     turn_texture = pygame.transform.rotate(self.turn_texture, 180)
                 elif (rect.facing == 3 and other.facing == 0) or (rect.facing == 2 and other.facing == 1):
@@ -89,9 +93,10 @@ class Snake:
                 elif (rect.facing == 0 and other.facing == 3) or (rect.facing == 1 and other.facing == 2):
                     turn_texture = pygame.transform.rotate(self.turn_texture, 270)
                     
-                    
+                
                 surface.blit(turn_texture, rect.topleft)
-            
+        
+        if TRANSPARENT_SNAKE_TAIL: self.tail_texture.set_alpha(alpha_ratio)
         surface.blit(pygame.transform.rotate(self.tail_texture, self.texture_map[self.body[-2].facing] * 90), self.body[-1].topleft)
     
     def go_right(self):
